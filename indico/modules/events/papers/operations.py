@@ -27,6 +27,7 @@ from indico.modules.events.papers.models.files import PaperFile
 from indico.modules.events.papers.models.reviews import PaperAction
 from indico.modules.events.papers.models.revisions import PaperRevision, PaperRevisionState
 from indico.modules.events.papers import logger
+from indico.modules.events.papers.models.comments import PaperReviewComment
 from indico.modules.events.papers.models.competences import PaperCompetence
 from indico.modules.events.papers.models.papers import Paper
 from indico.modules.events.papers.models.templates import PaperTemplate
@@ -164,3 +165,14 @@ def delete_paper_template(template):
     db.session.delete(template)
     db.session.flush()
     logger.info('Paper template %r deleted by %r', template, session.user)
+
+
+@no_autoflush
+def create_comment(paper, text, user):
+    comment = PaperReviewComment(user=user, text=text)
+    comment.paper_revision = paper.last_revision
+    db.session.flush()
+    logger.info("Paper %s received a comment from %s", paper, session.user)
+    paper.event_new.log(EventLogRealm.management, EventLogKind.positive, 'Abstracts',
+                        'Paper {} received a comment'.format(paper.verbose_title),
+                        session.user)

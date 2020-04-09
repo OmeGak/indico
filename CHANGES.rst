@@ -95,6 +95,12 @@ Bugfixes
 
 - None so far :)
 
+Internal Changes
+^^^^^^^^^^^^^^^^
+
+- Add ``location_info`` block in conference display template (thanks
+  :user:`omegak`)
+
 Version 2.2.8
 -------------
 

@@ -26,7 +26,7 @@ import {Translate, Param} from 'indico/react/i18n';
 import {renderPluginComponents} from 'indico/utils/plugins';
 
 import {getFieldRegistry} from '../form/fields/registry';
-import {getStaticData, getItemById} from '../form/selectors';
+import {getStaticData, getItemById, getItemsForConditionalDisplay} from '../form/selectors';
 
 import * as actions from './actions';
 import ItemTypeDropdown from './ItemTypeDropdown';
@@ -153,6 +153,9 @@ export default function ItemSettingsModal({id, sectionId, defaultNewItemType, on
           )}
           {SettingsComponent && <SettingsComponent {...itemData} />}
           {renderPluginComponents(`regform-${inputType}-field-settings`, {...itemData})}
+          <Fieldset legend={Translate.string('Show if')}>
+
+          </Fieldset>
           {!meta.noRetentionPeriod && !fieldIsRequired && (
             <Fieldset legend={Translate.string('Privacy')} compact>
               <FinalInput

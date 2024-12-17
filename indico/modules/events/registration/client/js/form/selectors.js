@@ -22,6 +22,12 @@ export const getItemById = createSelector(
   (fields, itemId) => fields[itemId]
 );
 
+/** Get items that can be used for conditional fields */
+export const getItemsForConditionalDisplay = createSelector(
+  getItems,
+  items => _.sortBy(Object.values(items).filter(item => item.type === 'text'), ['position', 'id'])
+);
+
 /** Get the currency used by the registration form. */
 export const getCurrency = createSelector(
   getStaticData,

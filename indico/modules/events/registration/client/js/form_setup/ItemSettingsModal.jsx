@@ -19,6 +19,7 @@ import {
   getValuesForFields,
   validators as v,
   parsers as p,
+  FinalDropdown,
 } from 'indico/react/forms';
 import {Fieldset} from 'indico/react/forms/fields';
 import {FinalModalForm} from 'indico/react/forms/final-form';
@@ -48,6 +49,7 @@ export default function ItemSettingsModal({id, sectionId, defaultNewItemType, on
   const isUnsupportedField = !(inputType in fieldRegistry);
   const meta = fieldRegistry[inputType] || {};
   const SettingsComponent = meta.settingsComponent;
+  const conditionalFields = useSelector(state => getItemsForConditionalDisplay(state));
 
   const handleSubmit = async (formData, form) => {
     const data = getValuesForFields(formData, form);
@@ -154,7 +156,16 @@ export default function ItemSettingsModal({id, sectionId, defaultNewItemType, on
           {SettingsComponent && <SettingsComponent {...itemData} />}
           {renderPluginComponents(`regform-${inputType}-field-settings`, {...itemData})}
           <Fieldset legend={Translate.string('Show if')}>
-
+            <FinalDropdown
+              name="conditional-fields"
+              selection
+              closeOnChange
+              options={conditionalFields.map(({title, id: fieldId}) => ({
+                value: fieldId,
+                text: title,
+              }))}
+              label={Translate.string('Field')}
+            />
           </Fieldset>
           {!meta.noRetentionPeriod && !fieldIsRequired && (
             <Fieldset legend={Translate.string('Privacy')} compact>

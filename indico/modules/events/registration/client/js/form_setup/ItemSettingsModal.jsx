@@ -49,7 +49,7 @@ export default function ItemSettingsModal({id, sectionId, defaultNewItemType, on
   const isUnsupportedField = !(inputType in fieldRegistry);
   const meta = fieldRegistry[inputType] || {};
   const SettingsComponent = meta.settingsComponent;
-  const conditionalFields = useSelector(state => getItemsForConditionalDisplay(state));
+  const itemsForConditionalDisplay = useSelector(state => getItemsForConditionalDisplay(state));
 
   const handleSubmit = async (formData, form) => {
     const data = getValuesForFields(formData, form);
@@ -157,14 +157,28 @@ export default function ItemSettingsModal({id, sectionId, defaultNewItemType, on
           {renderPluginComponents(`regform-${inputType}-field-settings`, {...itemData})}
           <Fieldset legend={Translate.string('Show if')}>
             <FinalDropdown
-              name="conditional-fields"
-              selection
-              closeOnChange
-              options={conditionalFields.map(({title, id: fieldId}) => ({
+              name="showIfField"
+              label={Translate.string('Field')}
+              placeholder={Translate.string('Select field...')}
+              options={itemsForConditionalDisplay.map(({title, id: fieldId}) => ({
                 value: fieldId,
                 text: title,
               }))}
-              label={Translate.string('Field')}
+              closeOnChange
+              selection
+            />
+            {/* TODO: Display only if showIfField is not empty */}
+            <FinalDropdown
+              name="showIfValue"
+              label={Translate.string('Has value')}
+              placeholder={Translate.string('Select value...')}
+              // TODO: Get possible values from the field selected in showIfField
+              options={[
+                {value: '1', text: Translate.string('Yes')},
+                {value: '0', text: Translate.string('No')},
+              ]}
+              closeOnChange
+              selection
             />
           </Fieldset>
           {!meta.noRetentionPeriod && !fieldIsRequired && (
